@@ -3,7 +3,6 @@ import {
   FiHome,
   FiPlusCircle,
   FiList,
-  FiUser,
   FiPieChart,
   FiX
 } from "react-icons/fi";

@@ -9,22 +9,13 @@ function Transactions() {
   const navigate = useNavigate();
   const [transactions, setTransactions] = useState([]);
   const [filter, setFilter] = useState("all");
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [showExportModal, setShowExportModal] = useState(false);
   const [exportRange, setExportRange] = useState({
     from: "2025-01",
     to: "2025-12",
   });
 
-  // Check screen size for mobile view
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const fetchTransactions = async () => {
     let url = `${API_BASE}/transactions`;
