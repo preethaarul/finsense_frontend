@@ -3,9 +3,7 @@ import "./Transactions.css";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../utils/authFetch";
 
-const API_BASE =
-  process.env.REACT_APP_API_BASE_URL ||
-  "https://finsense-fastapi.onrender.com";
+const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
 function Transactions() {
   const navigate = useNavigate();
@@ -16,6 +14,16 @@ function Transactions() {
     from: "2025-01",
     to: "2025-12",
   });
+
+  // Check screen size for mobile view
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const fetchTransactions = async () => {
     let url = `${API_BASE}/transactions`;
