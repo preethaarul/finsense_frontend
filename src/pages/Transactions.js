@@ -134,13 +134,13 @@ function Transactions() {
 
   const monthOptions = generateMonthOptions();
 
-  /* ---------------- UI (UNCHANGED) ---------------- */
   return (
     <div className="transactions-container">
       <h1>Transactions</h1>
-      <br />
-
+      <br></br>
+      {/* Filter and Export Container */}
       <div className="filter-export-container">
+        {/* Desktop Filter */}
         <div className="filter-container">
           <select
             className="filter-select"
@@ -153,11 +153,13 @@ function Transactions() {
           </select>
         </div>
 
+        {/* Export Button */}
         <button className="export-btn" onClick={handleExportClick}>
           ⬇ Export CSV
         </button>
       </div>
 
+      {/* Export Modal Dialog */}
       {showExportModal && (
         <div className="export-modal-overlay">
           <div className="export-modal">
@@ -167,41 +169,49 @@ function Transactions() {
                 <i className="fa fa-times"></i>
               </button>
             </div>
-
+            
             <div className="export-modal-body">
               <p>Select date range to export (YYYY-MM format):</p>
-
+              
               <div className="date-range-inputs">
                 <div className="date-input-group">
-                  <label>From Month</label>
+                  <label htmlFor="from-month">From Month</label>
                   <select
+                    id="from-month"
                     value={exportRange.from}
-                    onChange={(e) =>
-                      setExportRange({ ...exportRange, from: e.target.value })
-                    }
+                    onChange={(e) => setExportRange({...exportRange, from: e.target.value})}
+                    className="month-select"
                   >
-                    {monthOptions.map((m) => (
-                      <option key={m}>{m}</option>
+                    {monthOptions.map(month => (
+                      <option key={`from-${month}`} value={month}>
+                        {month}
+                      </option>
                     ))}
                   </select>
                 </div>
-
+                
                 <div className="date-input-group">
-                  <label>To Month</label>
+                  <label htmlFor="to-month">To Month</label>
                   <select
+                    id="to-month"
                     value={exportRange.to}
-                    onChange={(e) =>
-                      setExportRange({ ...exportRange, to: e.target.value })
-                    }
+                    onChange={(e) => setExportRange({...exportRange, to: e.target.value})}
+                    className="month-select"
                   >
-                    {monthOptions.map((m) => (
-                      <option key={m}>{m}</option>
+                    {monthOptions.map(month => (
+                      <option key={`to-${month}`} value={month}>
+                        {month}
+                      </option>
                     ))}
                   </select>
                 </div>
               </div>
+              
+              <div className="date-range-preview">
+                <p>Exporting data from <strong>{exportRange.from}</strong> to <strong>{exportRange.to}</strong></p>
+              </div>
             </div>
-
+            
             <div className="export-modal-footer">
               <button className="cancel-btn" onClick={handleCancelExport}>
                 Cancel
@@ -214,6 +224,20 @@ function Transactions() {
         </div>
       )}
 
+      {/* Mobile Filter */}
+      <div className="mobile-filter">
+        <select
+          className="filter-select"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          <option value="all">All Transactions</option>
+          <option value="income">Income Only</option>
+          <option value="expense">Expense Only</option>
+        </select>
+      </div>
+
+      {/* Desktop Table View */}
       <table className="expense-table">
         <thead>
           <tr>
@@ -234,19 +258,30 @@ function Transactions() {
             </tr>
           ) : (
             transactions.map((txn) => (
-              <tr key={txn.id}>
+              <tr 
+                key={txn.id} 
+                className={txn.type?.toLowerCase() === 'income' ? 'income-row' : 'expense-row'}
+              >
                 <td>{formatDate(txn.date)}</td>
-                <td>{formatType(txn.type)}</td>
+                <td>
+                  <span className={txn.type?.toLowerCase() === 'income' ? 'income-type' : 'expense-type'}>
+                    {formatType(txn.type)}
+                  </span>
+                </td>
                 <td>{txn.category}</td>
                 <td>{txn.description || "-"}</td>
-                <td>₹{Number(txn.amount).toLocaleString()}</td>
-                <td>
+                <td className={txn.type?.toLowerCase() === 'income' ? 'income-amount' : 'expense-amount'}>
+                  ₹{Number(txn.amount).toLocaleString()}
+                </td>
+                <td className="action-cell">
                   <i
-                    className="fa fa-pencil"
+                    className="fa fa-pencil edit-icon"
+                    title="Edit"
                     onClick={() => navigate("/add", { state: txn })}
                   ></i>
                   <i
-                    className="fa fa-trash"
+                    className="fa fa-trash delete-icon"
+                    title="Delete"
                     onClick={() => deleteTransaction(txn.id)}
                   ></i>
                 </td>
@@ -255,6 +290,59 @@ function Transactions() {
           )}
         </tbody>
       </table>
+
+      {/* Mobile Card View */}
+      <div className="transaction-cards">
+        {transactions.length === 0 ? (
+          <div className="no-transactions">
+            <i className="fa fa-receipt"></i>
+            <p>No transactions found</p>
+          </div>
+        ) : (
+          transactions.map((txn) => (
+            <div key={txn.id} className="transaction-card">
+              <div className="card-header">
+                <span className="card-date">{formatDate(txn.date)}</span>
+                <span className={`card-type ${txn.type?.toLowerCase()}`}>
+                  {formatType(txn.type)}
+                </span>
+              </div>
+              <div className="card-details">
+                <div className="card-category">
+                  Category
+                  <span>{txn.category}</span>
+                </div>
+                <div className="card-category">
+                  Amount
+                  <span className={`card-amount ${txn.type?.toLowerCase()}`}>
+                    {txn.type?.toLowerCase() === 'income' ? '+' : '-'}₹{Number(txn.amount).toLocaleString()}
+                  </span>
+                </div>
+                {txn.description && (
+                  <div className="card-description">
+                    <span>Description</span>
+                    {txn.description}
+                  </div>
+                )}
+              </div>
+              <div className="card-footer">
+                <div className="card-actions">
+                  <i
+                    className="fa fa-pencil edit-icon"
+                    title="Edit"
+                    onClick={() => navigate("/add", { state: txn })}
+                  ></i>
+                  <i
+                    className="fa fa-trash delete-icon"
+                    title="Delete"
+                    onClick={() => deleteTransaction(txn.id)}
+                  ></i>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
