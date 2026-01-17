@@ -193,7 +193,7 @@ function Landing() {
                 <span className="logo-text-land">FinSense</span>
               </div>
               <div className="brand-tag">
-                Smart Expense & Budget Management
+                Sensible Expense & Budget Management
               </div>
             </div>
 
