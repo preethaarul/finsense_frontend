@@ -1,9 +1,11 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import "./Transactions.css";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../utils/authFetch";
 
-const API_BASE = process.env.REACT_APP_API_BASE_URL;
+const API_BASE =
+  process.env.REACT_APP_API_BASE_URL ||
+  "https://finsense-fastapi.onrender.com";
 
 function Transactions() {
   const navigate = useNavigate();
@@ -15,8 +17,7 @@ function Transactions() {
     to: "2025-12",
   });
 
-  /* ---------------- FETCH TRANSACTIONS ---------------- */
-  const fetchTransactions = useCallback(async () => {
+  const fetchTransactions = async () => {
     let url = `${API_BASE}/transactions`;
 
     if (filter !== "all") {
@@ -28,13 +29,12 @@ function Transactions() {
 
     const data = await res.json();
     setTransactions(data);
-  }, [filter]);
+  };
 
   useEffect(() => {
     fetchTransactions();
-  }, [fetchTransactions]);
+  }, [filter]);
 
-  /* ---------------- DELETE ---------------- */
   const deleteTransaction = async (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this transaction?"
@@ -49,7 +49,6 @@ function Transactions() {
     if (res) fetchTransactions();
   };
 
-  /* ---------------- HELPERS ---------------- */
   const formatType = (type) => {
     if (!type) return "";
     return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
@@ -64,7 +63,6 @@ function Transactions() {
     });
   };
 
-  /* ---------------- EXPORT ---------------- */
   const handleExportClick = () => {
     const currentYear = new Date().getFullYear();
     setExportRange({
@@ -134,7 +132,6 @@ function Transactions() {
 
   const monthOptions = generateMonthOptions();
 
-  /* ---------------- UI (UNCHANGED) ---------------- */
   return (
     <div className="transactions-container">
       <h1>Transactions</h1>
@@ -173,32 +170,47 @@ function Transactions() {
 
               <div className="date-range-inputs">
                 <div className="date-input-group">
-                  <label>From Month</label>
+                  <label htmlFor="from-month">From Month</label>
                   <select
+                    id="from-month"
                     value={exportRange.from}
                     onChange={(e) =>
                       setExportRange({ ...exportRange, from: e.target.value })
                     }
+                    className="month-select"
                   >
-                    {monthOptions.map((m) => (
-                      <option key={m}>{m}</option>
+                    {monthOptions.map((month) => (
+                      <option key={`from-${month}`} value={month}>
+                        {month}
+                      </option>
                     ))}
                   </select>
                 </div>
 
                 <div className="date-input-group">
-                  <label>To Month</label>
+                  <label htmlFor="to-month">To Month</label>
                   <select
+                    id="to-month"
                     value={exportRange.to}
                     onChange={(e) =>
                       setExportRange({ ...exportRange, to: e.target.value })
                     }
+                    className="month-select"
                   >
-                    {monthOptions.map((m) => (
-                      <option key={m}>{m}</option>
+                    {monthOptions.map((month) => (
+                      <option key={`to-${month}`} value={month}>
+                        {month}
+                      </option>
                     ))}
                   </select>
                 </div>
+              </div>
+
+              <div className="date-range-preview">
+                <p>
+                  Exporting data from <strong>{exportRange.from}</strong> to{" "}
+                  <strong>{exportRange.to}</strong>
+                </p>
               </div>
             </div>
 
@@ -213,6 +225,18 @@ function Transactions() {
           </div>
         </div>
       )}
+
+      <div className="mobile-filter">
+        <select
+          className="filter-select"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          <option value="all">All Transactions</option>
+          <option value="income">Income Only</option>
+          <option value="expense">Expense Only</option>
+        </select>
+      </div>
 
       <table className="expense-table">
         <thead>
@@ -234,19 +258,46 @@ function Transactions() {
             </tr>
           ) : (
             transactions.map((txn) => (
-              <tr key={txn.id}>
+              <tr
+                key={txn.id}
+                className={
+                  txn.type?.toLowerCase() === "income"
+                    ? "income-row"
+                    : "expense-row"
+                }
+              >
                 <td>{formatDate(txn.date)}</td>
-                <td>{formatType(txn.type)}</td>
+                <td>
+                  <span
+                    className={
+                      txn.type?.toLowerCase() === "income"
+                        ? "income-type"
+                        : "expense-type"
+                    }
+                  >
+                    {formatType(txn.type)}
+                  </span>
+                </td>
                 <td>{txn.category}</td>
                 <td>{txn.description || "-"}</td>
-                <td>₹{Number(txn.amount).toLocaleString()}</td>
-                <td>
+                <td
+                  className={
+                    txn.type?.toLowerCase() === "income"
+                      ? "income-amount"
+                      : "expense-amount"
+                  }
+                >
+                  ₹{Number(txn.amount).toLocaleString()}
+                </td>
+                <td className="action-cell">
                   <i
-                    className="fa fa-pencil"
+                    className="fa fa-pencil edit-icon"
+                    title="Edit"
                     onClick={() => navigate("/add", { state: txn })}
                   ></i>
                   <i
-                    className="fa fa-trash"
+                    className="fa fa-trash delete-icon"
+                    title="Delete"
                     onClick={() => deleteTransaction(txn.id)}
                   ></i>
                 </td>
@@ -255,6 +306,59 @@ function Transactions() {
           )}
         </tbody>
       </table>
+
+      <div className="transaction-cards">
+        {transactions.length === 0 ? (
+          <div className="no-transactions">
+            <i className="fa fa-receipt"></i>
+            <p>No transactions found</p>
+          </div>
+        ) : (
+          transactions.map((txn) => (
+            <div key={txn.id} className="transaction-card">
+              <div className="card-header">
+                <span className="card-date">{formatDate(txn.date)}</span>
+                <span className={`card-type ${txn.type?.toLowerCase()}`}>
+                  {formatType(txn.type)}
+                </span>
+              </div>
+              <div className="card-details">
+                <div className="card-category">
+                  Category
+                  <span>{txn.category}</span>
+                </div>
+                <div className="card-category">
+                  Amount
+                  <span className={`card-amount ${txn.type?.toLowerCase()}`}>
+                    {txn.type?.toLowerCase() === "income" ? "+" : "-"}₹
+                    {Number(txn.amount).toLocaleString()}
+                  </span>
+                </div>
+                {txn.description && (
+                  <div className="card-description">
+                    <span>Description</span>
+                    {txn.description}
+                  </div>
+                )}
+              </div>
+              <div className="card-footer">
+                <div className="card-actions">
+                  <i
+                    className="fa fa-pencil edit-icon"
+                    title="Edit"
+                    onClick={() => navigate("/add", { state: txn })}
+                  ></i>
+                  <i
+                    className="fa fa-trash delete-icon"
+                    title="Delete"
+                    onClick={() => deleteTransaction(txn.id)}
+                  ></i>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
