@@ -273,12 +273,33 @@ function Landing() {
 
 
             <div className="feature-item">
+              <div className="feature-icon">📊</div>
+              <div className="feature-content">
+                <h4>Interactive Dashboards</h4>
+                <p>
+                  Visualize your finances through beautiful glassy charts,
+                  income vs expense trends, and detailed category breakdowns.
+                </p>
+              </div>
+            </div>
+
+            <div className="feature-item">
               <div className="feature-icon">🧾</div>
               <div className="feature-content">
                 <h4>Smart SMS Parser</h4>
                 <p>
                   Effortlessly log transactions by simply pasting your bank or
                   payment SMS. Our system extracts merchant, amount, and category instantly.
+                </p>
+              </div>
+            </div>
+
+            <div className="feature-item">
+              <div className="feature-icon">📅</div>
+              <div className="feature-content">
+                <h4>Monthly Budgeting</h4>
+                <p>
+                  Set discipline with monthly budget limits. Get real-time alerts as you approach your limits.
                 </p>
               </div>
             </div>
@@ -294,15 +315,12 @@ function Landing() {
               </div>
             </div>
 
-
-
             <div className="feature-item">
-              <div className="feature-icon">📊</div>
+              <div className="feature-icon">🎯</div>
               <div className="feature-content">
-                <h4>Interactive Dashboards</h4>
+                <h4>Savings Goals</h4>
                 <p>
-                  Visualize your finances through beautiful glassy charts,
-                  income vs expense trends, and detailed category breakdowns.
+                  Set, track, and achieve your financial milestones with our intelligent goal tracking system.
                 </p>
               </div>
             </div>
@@ -310,10 +328,10 @@ function Landing() {
             <div className="feature-item">
               <div className="feature-icon">📥</div>
               <div className="feature-content">
-                <h4>Advanced Export & Search</h4>
+                <h4>Export & Search</h4>
                 <p>
                   Powerful transaction management with deep search, filtering,
-                  and easy CSV export for all your financial reporting needs.
+                  and easy CSV export for all your reports.
                 </p>
               </div>
             </div>

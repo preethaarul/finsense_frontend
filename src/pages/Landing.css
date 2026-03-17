@@ -230,7 +230,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 16px;
+  gap: 12px;
   padding: 30px 24px;
   background: rgba(255, 255, 255, 0.02);
   border-radius: 20px;
@@ -283,7 +283,7 @@
   align-items: center;
   justify-content: center;
   color: #a855f7;
-  margin-bottom: 8px;
+  margin-bottom: 0;
   border: 1px solid rgba(168, 85, 247, 0.1);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
@@ -556,7 +556,7 @@
   
   .feature-item {
     padding: 18px;
-    gap: 14px;
+    gap: 10px;
     min-height: 160px;
     max-width: 260px;
   }
