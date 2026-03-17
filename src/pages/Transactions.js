@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { FiPlusCircle, FiX, FiSearch, FiDownload } from "react-icons/fi";
 import "./Transactions.css";
-import { useNavigate } from "react-router-dom";
 import { authFetch } from "../utils/authFetch";
 
 const API_BASE = process.env.REACT_APP_API_BASE_URL;
@@ -23,7 +22,6 @@ const getTodayDate = () => {
 };
 
 function Transactions() {
-  const navigate = useNavigate();
   const [transactions, setTransactions] = useState([]);
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -108,14 +106,7 @@ function Transactions() {
   };
 
   /* ---------------- EXPORT ---------------- */
-  const handleExportClick = () => {
-    const currentYear = new Date().getFullYear();
-    setExportRange({
-      from: `${currentYear}-01`,
-      to: `${currentYear}-12`,
-    });
-    setShowExportModal(true);
-  };
+
 
   const handleExportCSV = async () => {
     if (!exportRange.from || !exportRange.to) {

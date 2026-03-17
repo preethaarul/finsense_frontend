@@ -16,7 +16,7 @@ import {
   Filler,
 } from "chart.js";
 import { authFetch } from "../utils/authFetch";
-import { FiArrowUpRight, FiArrowDownRight, FiActivity, FiBriefcase, FiPieChart } from "react-icons/fi";
+import { FiArrowDownRight, FiActivity, FiPieChart } from "react-icons/fi";
 
 ChartJS.register(
   ArcElement,
@@ -38,7 +38,6 @@ function Dashboard() {
   const [summary, setSummary] = useState(undefined);
   const [timeline, setTimeline] = useState(undefined);
   const [ruleInsights, setRuleInsights] = useState(null);
-  const [transactions, setTransactions] = useState([]);
   const [view, setView] = useState("monthly");
   const [loading, setLoading] = useState(true);
 
@@ -60,9 +59,6 @@ function Dashboard() {
         setSummary(await s.json());
         setTimeline(await t.json());
         setRuleInsights(await r.json());
-
-        const allTransactions = await tx.json();
-        setTransactions(allTransactions.slice(0, 5));
       } catch (error) {
         console.error("Error loading dashboard:", error);
         setSummary(null);
@@ -127,51 +123,7 @@ function Dashboard() {
   };
 
   const monthlyProjection = calculateMonthlyProjection();
-  const vsBudget =
-    monthlyBudget > 0 ? monthlyProjection - monthlyBudget : 0;
 
-  const vsBudgetPercent =
-    monthlyBudget > 0
-      ? Math.round((Math.abs(vsBudget) / monthlyBudget) * 100)
-      : 0;
-
-  let projectionClass = "balance-positive";
-  let projectionText = "On track";
-  let projectionSubtext = "";
-
-  if (monthlyBudget > 0) {
-    if (vsBudget > 0) {
-      projectionClass = "balance-negative";
-      projectionText = `Will exceed by ₹${vsBudget.toLocaleString()}`;
-      projectionSubtext = `${vsBudgetPercent}% over budget`;
-    } else if (vsBudget < -(monthlyBudget * 0.2)) {
-      projectionClass = "balance-positive";
-      projectionText = `Will save ₹${Math.abs(vsBudget).toLocaleString()}`;
-      projectionSubtext = `${vsBudgetPercent}% under budget`;
-    } else {
-      projectionText = "Within budget";
-      projectionSubtext = "Projection aligned";
-    }
-  } else {
-    projectionClass = "expense";
-    projectionText = `₹${monthlyProjection.toLocaleString()}`;
-    projectionSubtext = "Projected monthly total";
-  }
-
-  /* ---------- BALANCE STATUS ---------- */
-  let balanceClass = "balance-positive";
-  let balanceText = "Within budget";
-
-  if (remainingBalance < 0) {
-    balanceClass = "balance-negative";
-    balanceText = "Over budget";
-  } else if (
-    monthlyBudget > 0 &&
-    remainingBalance < monthlyBudget * 0.1
-  ) {
-    balanceClass = "balance-warning";
-    balanceText = "Low balance";
-  }
 
   /* ---------- DONUT CHART ---------- */
   const donutData = {
