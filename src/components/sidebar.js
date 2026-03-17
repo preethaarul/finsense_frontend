@@ -1,12 +1,10 @@
 import { NavLink } from "react-router-dom";
 import {
   FiHome,
-  FiPlusCircle,
   FiList,
   FiPieChart,
   FiTarget,
   FiBarChart2,
-  FiMessageSquare,
   FiUser
 } from "react-icons/fi";
 import "./sidebar.css";

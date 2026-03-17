@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./SavingsGoals.css";
 import { authFetch } from "../utils/authFetch";
-import { FiPlus, FiTarget, FiDollarSign, FiPlusCircle, FiX } from "react-icons/fi";
+import { FiPlus, FiTarget, FiPlusCircle, FiX } from "react-icons/fi";
 
 const API_BASE = process.env.REACT_APP_API_BASE_URL;
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { authFetch } from "../utils/authFetch";
-import { FiDollarSign, FiCalendar, FiTrendingUp, FiCheckCircle, FiAlertCircle, FiClock } from "react-icons/fi";
+import { FiCalendar, FiTrendingUp, FiCheckCircle, FiAlertCircle, FiClock } from "react-icons/fi";
 import "./Budget.css";
 
 const API_BASE = process.env.REACT_APP_API_BASE_URL;
