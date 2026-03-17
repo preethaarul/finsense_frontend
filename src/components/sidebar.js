@@ -4,7 +4,10 @@ import {
   FiPlusCircle,
   FiList,
   FiPieChart,
-  FiX
+  FiTarget,
+  FiBarChart2,
+  FiMessageSquare,
+  FiUser
 } from "react-icons/fi";
 import "./sidebar.css";
 
@@ -15,13 +18,13 @@ function Sidebar({ isMobileOpen, toggleSidebar }) {
       {isMobileOpen && (
         <div className="sidebar-overlay" onClick={toggleSidebar}></div>
       )}
-      
+
       <aside className={`sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
-        {/* Mobile header with close button */}
-        <div className="sidebar-mobile-header">
-          <button className="sidebar-close" onClick={toggleSidebar}>
-            <FiX size={24} />
-          </button>
+        <div className="sidebar-header">
+          <div className="brand-logo">
+            <div className="logo-circle">F$</div>
+            <span className="logo-text">FinSense</span>
+          </div>
         </div>
 
         {/* NAV */}
@@ -41,31 +44,13 @@ function Sidebar({ isMobileOpen, toggleSidebar }) {
             <span>Dashboard</span>
           </NavLink>
 
-          <NavLink
-            to="/add"
-            className={({ isActive }) =>
-              isActive ? "nav-item active" : "nav-item"
-            }
-            onClick={() => {
-              if (window.innerWidth < 1024) {
-                toggleSidebar();
-              }
-            }}
-          >
-            <FiPlusCircle />
-            <span>Add Transaction</span>
-          </NavLink>
 
           <NavLink
             to="/transactions"
             className={({ isActive }) =>
               isActive ? "nav-item active" : "nav-item"
             }
-            onClick={() => {
-              if (window.innerWidth < 1024) {
-                toggleSidebar();
-              }
-            }}
+            onClick={() => window.innerWidth < 1024 && toggleSidebar()}
           >
             <FiList />
             <span>Transactions</span>
@@ -76,18 +61,55 @@ function Sidebar({ isMobileOpen, toggleSidebar }) {
             className={({ isActive }) =>
               isActive ? "nav-item active" : "nav-item"
             }
-            onClick={() => {
-              if (window.innerWidth < 1024) {
-                toggleSidebar();
-              }
-            }}
+            onClick={() => window.innerWidth < 1024 && toggleSidebar()}
           >
             <FiPieChart />
-            <span>Manage Budget</span>
+            <span>Budget Tracker</span>
           </NavLink>
 
-      
+          <NavLink
+            to="/goals"
+            className={({ isActive }) =>
+              isActive ? "nav-item active" : "nav-item"
+            }
+            onClick={() => window.innerWidth < 1024 && toggleSidebar()}
+          >
+            <FiTarget />
+            <span>Savings Goals</span>
+          </NavLink>
+
+          <NavLink
+            to="/predictions"
+            className={({ isActive }) =>
+              isActive ? "nav-item active" : "nav-item"
+            }
+            onClick={() => window.innerWidth < 1024 && toggleSidebar()}
+          >
+            <FiBarChart2 />
+            <span>Future Forecast</span>
+          </NavLink>
+
+
+
         </nav>
+
+        <div className="sidebar-bottom">
+          <NavLink
+            to="/profile"
+            className="user-info-card"
+            onClick={() => window.innerWidth < 1024 && toggleSidebar()}
+          >
+            <span className="user-label">USER PROFILE</span>
+            <div className="user-profile">
+              <div className="user-avatar">
+                <FiUser />
+              </div>
+              <div className="user-details">
+                <span className="user-name">Preetha</span>
+              </div>
+            </div>
+          </NavLink>
+        </div>
       </aside>
     </>
   );

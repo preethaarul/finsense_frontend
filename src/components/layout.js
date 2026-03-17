@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import Sidebar from "./sidebar";
-import Topbar from "./Topbar";
 import { Outlet, useLocation } from "react-router-dom";
+import { FiMenu } from "react-icons/fi";
 import "./layout.css";
+
+
 
 function Layout() {
   const location = useLocation();
@@ -35,20 +37,41 @@ function Layout() {
     }
   }, [location.pathname, isMobile]);
 
+  // Lock body scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (isMobileOpen && isMobile) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileOpen, isMobile]);
+
   return (
     <div className="layout">
       <Sidebar 
         isMobileOpen={isMobileOpen} 
         toggleSidebar={toggleSidebar} 
       />
-      <Topbar 
-        title={pageTitles[location.pathname]} 
-        toggleSidebar={toggleSidebar}
-      />
       
-      <main className={`content ${isMobileOpen ? 'sidebar-open' : ''}`}>
-        <Outlet />
-      </main>
+      <div className="main-wrapper">
+        {/* Mobile Topbar */}
+        <header className="mobile-topbar">
+          <button className="menu-toggle" onClick={toggleSidebar}>
+            <FiMenu />
+          </button>
+          <span className="mobile-title">
+            {pageTitles[location.pathname] || "FinSense"}
+          </span>
+          <div style={{ width: 40 }} /> {/* Spacer for symmetry */}
+        </header>
+
+        <main className={`content ${isMobileOpen ? 'sidebar-open' : ''}`}>
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }
@@ -59,6 +82,7 @@ const pageTitles = {
   "/add": "Add Transaction",
   "/profile": "Profile",
   "/budget": "Budget",
+  "/predictions": "Future Forecast",
 };
 
 export default Layout;

@@ -130,8 +130,10 @@ function Profile() {
 
   if (loading) {
     return (
-      <div className="profile-container">
-        <h1>Profile</h1>
+      <div className="page-container profile-container">
+        <header className="page-header-area">
+          <h1 className="page-title">Profile</h1>
+        </header>
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p className="loading">Loading profile...</p>
@@ -142,8 +144,10 @@ function Profile() {
 
   if (!profile) {
     return (
-      <div className="profile-container">
-        <h1>Profile</h1>
+      <div className="page-container profile-container">
+        <header className="page-header-area">
+          <h1 className="page-title">Profile</h1>
+        </header>
         <div className="profile-card">
           <p className="status error">Failed to load profile</p>
           <button className="logout-btn" onClick={logout}>
@@ -155,93 +159,106 @@ function Profile() {
   }
 
   return (
-    <div className="profile-container">
-      <h1>Profile</h1>
+    <div className="page-container profile-container">
+      <header className="page-header-area">
+        <h1 className="page-title">Profile Settings</h1>
+        <p className="page-subtitle">Manage your personal information and account security</p>
+      </header>
 
-      {/* ---------- ACCOUNT INFO ---------- */}
-      <div className="profile-card">
-        <h3>Account Information</h3>
-
-        <div className="profile-row">
-          <span>Name</span>
-          <span>{profile.name || "—"}</span>
-        </div>
-
-        <div className="profile-row">
-          <span>Email</span>
-          <span>{profile.email || "—"}</span>
-        </div>
-
-        <div className="profile-row">
-          <span>Date Joined</span>
-          <span>{formatDate(profile.created_at)}</span>
-        </div>
-      </div>
-
-      {/* ---------- SECURITY ---------- */}
-      <div className="profile-card">
-        <h3>Security</h3>
-
-        <div className="password-inputs">
-          <div className="input-group">
-            <label>Current Password</label>
-            <input
-              type="password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-            />
+      <div className="profile-grid">
+        {/* LEFT COLUMN: INFO & SECURITY */}
+        <div className="profile-main">
+          {/* ---------- ACCOUNT INFO ---------- */}
+          <div className="profile-card">
+            <h3>Account Information</h3>
+            <div className="profile-row">
+              <span>Name</span>
+              <span>{profile.name || "—"}</span>
+            </div>
+            <div className="profile-row">
+              <span>Email Address</span>
+              <span>{profile.email || "—"}</span>
+            </div>
+            <div className="profile-row">
+              <span>Member Since</span>
+              <span>{formatDate(profile.created_at)}</span>
+            </div>
           </div>
 
-          <div className="input-group">
-            <label>New Password</label>
-            <input
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            {newPassword && (
-              <div className={`password-strength ${getPasswordStrength(newPassword)}`}>
-                Strength: {getPasswordStrength(newPassword)}
+          {/* ---------- SECURITY ---------- */}
+          <div className="profile-card" style={{ marginTop: '24px' }}>
+            <h3>Change Password</h3>
+            <div className="password-inputs">
+              <div className="input-group">
+                <label>Current Password</label>
+                <input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                />
               </div>
+
+              <div className="input-group">
+                <label>New Password</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+                {newPassword && (
+                  <div className={`password-strength ${getPasswordStrength(newPassword)}`}>
+                    Strength: {getPasswordStrength(newPassword)}
+                  </div>
+                )}
+              </div>
+
+              <div className="input-group">
+                <label>Confirm New Password</label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <button className="update-password-btn" onClick={handleChangePassword}>
+              Update Password
+            </button>
+
+            {status && (
+              <p className={`status ${status.includes("success") ? "success" : "error"}`}>
+                {status}
+              </p>
             )}
           </div>
-
-          <div className="input-group">
-            <label>Confirm New Password</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          </div>
         </div>
 
-        <button className="update-password-btn" onClick={handleChangePassword}>
-          Update Password
-        </button>
+        {/* RIGHT COLUMN: ACTIONS & DANGER */}
+        <div className="profile-side">
+          <div className="profile-card">
+            <h3>Session</h3>
+            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>
+              Manage your current session and account access.
+            </p>
+            <button className="logout-btn" onClick={logout}>
+              Sign Out
+            </button>
+          </div>
 
-        {status && (
-          <p className={`status ${status.includes("success") ? "success" : "error"}`}>
-            {status}
-          </p>
-        )}
-
-        <hr />
-
-        <button className="logout-btn" onClick={logout}>
-          Logout
-        </button>
-      </div>
-
-      {/* ---------- DANGER ZONE ---------- */}
-      <div className="profile-card danger-zone">
-        <button
-          className="delete-account-btn"
-          onClick={handleDeleteAccount}
-        >
-          Delete Account
-        </button>
-        <p>This action permanently deletes your account and all data.</p>
+          <div className="profile-card danger-zone" style={{ marginTop: '24px' }}>
+            <h3>Account Deletion</h3>
+            <p>
+              Once you delete your account, there is no going back. Please be certain.
+            </p>
+            <button
+              className="delete-account-btn"
+              onClick={handleDeleteAccount}
+            >
+              Delete Account
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

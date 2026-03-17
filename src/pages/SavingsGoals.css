@@ -1,0 +1,344 @@
+.goals-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.create-goal-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+}
+
+.create-goal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+}
+
+/* Financial Model Card */
+.financial-model-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.fm-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.fm-operator {
+  font-size: 24px;
+  color: #64748b;
+  font-weight: 300;
+}
+
+.fm-label {
+  font-size: 13px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.fm-val {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+}
+
+.fm-val.positive { color: #10b981; }
+.fm-val.negative { color: #f43f5e; }
+.fm-val.neutral { color: #06b6d4; }
+
+.available-balance {
+  background: rgba(168, 85, 247, 0.1);
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.available-balance .fm-val {
+  color: #ffffff;
+  font-size: 24px;
+}
+
+/* Form Card */
+.goal-form-card {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  animation: slideDown 0.3s ease-out;
+}
+
+.goal-form-card h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-family: 'Outfit', sans-serif;
+  color: #f8fafc;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  color: #cbd5e1;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #a855f7;
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.submit-goal-btn {
+  width: 100%;
+  padding: 14px;
+  background: #a855f7;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.submit-goal-btn:hover {
+  background: #9333ea;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Goals Grid */
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.goal-card {
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.goal-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.goal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.goal-header h4 {
+  margin: 0;
+  font-size: 18px;
+  font-family: 'Outfit', sans-serif;
+  color: #f8fafc;
+}
+
+.goal-progress-text {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.goal-amounts {
+  margin-bottom: 6px;
+}
+
+.saved-amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+}
+
+.target-amount {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.remaining-text {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0 0 16px 0;
+}
+
+.goal-reached-text {
+  font-size: 14px;
+  color: #10b981;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+}
+
+.progress-bar-container {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  border-radius: 4px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.add-savings-btn {
+  margin-top: auto;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-savings-btn:hover:not(:disabled) {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #c084fc;
+}
+
+.add-savings-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.add-savings-form {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.add-savings-form input {
+  padding: 10px 12px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid #a855f7;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+}
+
+.add-savings-form input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
+}
+
+.add-savings-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.add-savings-actions button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: #10b981;
+  color: white;
+}
+
+.save-btn:hover { background: #059669; }
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.cancel-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+@media (max-width: 768px) {
+  .financial-model-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .fm-operator {
+    display: none;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}

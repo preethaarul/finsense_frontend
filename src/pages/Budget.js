@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { authFetch } from "../utils/authFetch";
+import { FiDollarSign, FiCalendar, FiTrendingUp, FiCheckCircle, FiAlertCircle, FiClock } from "react-icons/fi";
 import "./Budget.css";
 
 const API_BASE = process.env.REACT_APP_API_BASE_URL;
@@ -67,7 +68,7 @@ function Budget() {
             });
             setExpenses(expenseMap);
           }
-        } catch {}
+        } catch { }
 
       } finally {
         setLoading(false);
@@ -157,7 +158,10 @@ function Budget() {
   };
 
   const quickSuggestions = [5000, 10000, 20000, 50000, 100000];
-  const existingBudget = history.find(b => b.month === month && b.year === year);
+  const currentBudget = history.find(b => b.month === month && b.year === year);
+  const currentSpent = expenses[`${year}-${month}`] || 0;
+  const remaining = currentBudget ? Math.max(0, currentBudget.amount - currentSpent) : 0;
+  const usagePct = currentBudget ? Math.round((currentSpent / currentBudget.amount) * 100) : 0;
 
   if (loading) {
     return (
@@ -165,128 +169,180 @@ function Budget() {
         <h1>Monthly Budget</h1>
         <div className="loading-state">
           <div className="loading-spinner"></div>
+          <p>Loading your budget...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="budget-container">
-      <h1>Monthly Budget</h1>
+    <div className="page-container budget-container">
+      <header className="page-header-area">
+        <h1 className="page-title">Budget Tracker</h1>
+        <p className="page-subtitle">Set your spending limits and track your discipline</p>
+      </header>
 
-      {showConfirm && (
-        <div className="confirm-modal-overlay">
-          <div className="confirm-modal">
-            <div className="modal-header">
-              <h3>Update Budget</h3>
-            </div>
-            <div className="modal-content">
-              <p>Confirm new budget for {monthNames[month - 1]} {year}</p>
-              <div className="amount-display">
-                ₹{Number(amount).toLocaleString()}
-              </div>
-            </div>
-            <div className="modal-actions">
-              <button className="cancel-btn" onClick={cancelUpdate}>Cancel</button>
-              <button className="confirm-btn" onClick={confirmUpdate}>Update</button>
-            </div>
+      {/* ---------- STATS OVERVIEW ---------- */}
+      <div className="budget-stats-row">
+        <div className="budget-stat-card">
+          <div className="stat-icon-box expense-bg"><FiTrendingUp /></div>
+          <div className="stat-info">
+            <span className="stat-label">Spent This Month</span>
+            <span className="stat-value">₹{currentSpent.toLocaleString()}</span>
           </div>
         </div>
-      )}
-
-      <div className="budget-card">
-        <h3>Set Budget — {monthNames[month - 1]} {year}</h3>
-
-        {existingBudget && (
-          <div className="existing-budget-notice">
-            <span>Current budget: ₹{existingBudget.amount.toLocaleString()}</span>
-          </div>
-        )}
-
-        <div className="quick-suggestions">
-          <span>Quick set:</span>
-          <div className="quick-buttons">
-            {quickSuggestions.map(v => (
-              <button
-                key={v}
-                className="quick-btn"
-                onClick={() => setAmount(v.toString())}
-              >
-                ₹{v.toLocaleString()}
-              </button>
-            ))}
+        <div className="budget-stat-card">
+          <div className="stat-icon-box budget-bg"><FiCheckCircle /></div>
+          <div className="stat-info">
+            <span className="stat-label">Remaining Budget</span>
+            <span className="stat-value">₹{remaining.toLocaleString()}</span>
           </div>
         </div>
-
-        <div className="input-group">
-          <span className="currency">₹</span>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
+        <div className="budget-stat-card">
+          <div className="stat-icon-box usage-bg"><FiClock /></div>
+          <div className="stat-info">
+            <span className="stat-label">Budget Usage</span>
+            <span className="stat-value">{usagePct}%</span>
+          </div>
         </div>
-
-        <button onClick={handleSaveClick} className="save-btn">
-          {existingBudget ? "Update Budget" : "Save Budget"}
-        </button>
-
-        {message && (
-          <p className={`status ${message.includes("success") ? "success" : "error"}`}>
-            {message}
-          </p>
-        )}
       </div>
 
-      <div className="budget-card">
-        <h3>Budget History</h3>
+      <div className="budget-main-grid">
+        {/* ---------- SET BUDGET CARD ---------- */}
+        <section className="set-budget-section">
+          <div className="budget-card glass-card">
+            <div className="card-header">
+              <FiCalendar className="header-icon" />
+              <h3>Set Budget — {monthNames[month - 1]} {year}</h3>
+            </div>
 
-        {history.length === 0 ? (
-          <p className="muted">No previous budgets set</p>
-        ) : (
-          <div className="budget-history">
-            <table>
-              <thead>
-                <tr>
-                  <th>Month</th>
-                  <th>Budget</th>
-                  <th>Expense</th>
-                  <th>Usage</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
+            {currentBudget && (
+              <div className="existing-budget-banner">
+                <FiAlertCircle />
+                <span>Current budget is ₹{currentBudget.amount.toLocaleString()}</span>
+              </div>
+            )}
+
+            <div className="budget-input-area">
+              <div className="input-label">Enter Monthly Limit</div>
+              <div className="input-group-premium">
+                <span className="currency-symbol">₹</span>
+                <input
+                  type="number"
+                  placeholder="0.00"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+              </div>
+
+              <div className="quick-set-premium">
+                <div className="section-small-title">Quick Settings</div>
+                <div className="quick-buttons-row">
+                  {quickSuggestions.map(v => (
+                    <button
+                      key={v}
+                      className={`quick-pill ${Number(amount) === v ? 'active' : ''}`}
+                      onClick={() => setAmount(v.toString())}
+                    >
+                      ₹{v.toLocaleString()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button onClick={handleSaveClick} className="save-budget-btn">
+                {currentBudget ? "Update Monthly Budget" : "Initialize Budget"}
+              </button>
+
+              {message && (
+                <div className={`status-message ${message.includes("success") ? "success" : "error"}`}>
+                  {message.includes("success") ? <FiCheckCircle /> : <FiAlertCircle />}
+                  <span>{message}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ---------- HISTORY SECTION ---------- */}
+        <section className="budget-history-section">
+          <div className="budget-card glass-card">
+            <div className="card-header">
+              <FiClock className="header-icon" />
+              <h3>Budget History</h3>
+            </div>
+
+            {history.length === 0 ? (
+              <div className="empty-history">
+                <FiClock />
+                <p>No budget history found yet.</p>
+              </div>
+            ) : (
+              <div className="history-list">
                 {history.map(b => {
                   const usage = calculateUsage(b.month, b.year);
                   const expense = expenses[`${b.year}-${b.month}`] || 0;
                   const isCurrent = b.month === month && b.year === year;
 
                   return (
-                    <tr key={b.id} className={isCurrent ? "current-month" : ""}>
-                      <td>{monthNames[b.month - 1]} {b.year}</td>
-                      <td>₹{b.amount.toLocaleString()}</td>
-                      <td>₹{expense.toLocaleString()}</td>
-                      <td>
-                        <div
-                          className={`usage-bar ${getStatusClass(usage)}`}
-                          style={{ width: `${usage}%` }}
-                        >
-                          {usage}%
+                    <div key={b.id} className={`history-item ${isCurrent ? 'current' : ''}`}>
+                      <div className="history-main">
+                        <div className="history-date">
+                          <span className="h-month">{monthNames[b.month - 1]}</span>
+                          <span className="h-year">{b.year}</span>
+                          {isCurrent && <span className="current-pill">Active</span>}
                         </div>
-                      </td>
-                      <td>
-                        <span className={`status-badge ${getStatusClass(usage)}`}>
-                          {usage >= 100 ? "Over" : usage >= 80 ? "High" : usage >= 50 ? "Moderate" : "Good"}
-                        </span>
-                      </td>
-                    </tr>
+                        <div className="history-amounts">
+                          <div className="h-amt">
+                            <span className="h-label">Budget</span>
+                            <span className="h-val">₹{b.amount.toLocaleString()}</span>
+                          </div>
+                          <div className="h-amt">
+                            <span className="h-label">Spent</span>
+                            <span className="h-val">₹{expense.toLocaleString()}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="history-progress">
+                        <div className="progress-info">
+                          <span>Usage: {usage}%</span>
+                          <span className={`status-text ${getStatusClass(usage)}`}>
+                            {usage >= 100 ? "Over Budget" : usage >= 80 ? "Critical" : "On Track"}
+                          </span>
+                        </div>
+                        <div className="progress-track">
+                          <div
+                            className={`progress-fill ${getStatusClass(usage)}`}
+                            style={{ width: `${usage}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   );
                 })}
-              </tbody>
-            </table>
+              </div>
+            )}
           </div>
-        )}
+        </section>
       </div>
+
+      {showConfirm && (
+        <div className="confirm-modal-overlay">
+          <div className="confirm-modal-glass">
+            <h3>Confirm Update</h3>
+            <p>You are changing the budget for <strong>{monthNames[month - 1]} {year}</strong></p>
+            <div className="new-amount-preview">
+              <span className="prev-label">New Budget</span>
+              <span className="prev-val">₹{Number(amount).toLocaleString()}</span>
+            </div>
+            <div className="modal-actions-row">
+              <button className="modal-cancel" onClick={cancelUpdate}>Cancel</button>
+              <button className="modal-confirm" onClick={confirmUpdate}>Confirm & Update</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -193,7 +193,7 @@ function Landing() {
                 <span className="logo-text-land">FinSense</span>
               </div>
               <div className="brand-tag">
-                Sensible Expense & Budget Management
+                Smart Spending. Better Budgeting.
               </div>
             </div>
 
@@ -205,7 +205,7 @@ function Landing() {
 
             <p className="tagline">
               Full-stack personal finance platform that combines data
-              visualization, behavioral insights, and machine learning to help
+              visualization, behavioral insights, and intelligent tracking to help
               you track expenses, plan budgets, and build sustainable financial
               habits.
             </p>
@@ -270,69 +270,50 @@ function Landing() {
           </h2>
 
           <div className="features-list">
-            <div className="feature-item">
-              <div className="feature-icon">📊</div>
-              <div className="feature-content">
-                <h4>Visual Financial Dashboard</h4>
-                <p>
-                  Clean, interactive dashboards showing category-wise expenses,
-                  income vs expense trends, and monthly spending summaries.
-                </p>
-              </div>
-            </div>
+
 
             <div className="feature-item">
               <div className="feature-icon">🧾</div>
               <div className="feature-content">
-                <h4>Intelligent Expense Categorization</h4>
+                <h4>Smart SMS Parser</h4>
                 <p>
-                  Automatically classifies transactions into meaningful
-                  categories using intelligent rules, reducing manual effort
-                  and improving budgeting accuracy.
+                  Effortlessly log transactions by simply pasting your bank or
+                  payment SMS. Our system extracts merchant, amount, and category instantly.
                 </p>
               </div>
             </div>
 
             <div className="feature-item">
-              <div className="feature-icon">💰</div>
+              <div className="feature-icon">📈</div>
               <div className="feature-content">
-                <h4>Monthly Budget Planning</h4>
+                <h4>Future Forecast</h4>
                 <p>
-                  Set monthly budgets, track remaining balance in real time,
-                  and review budget history across previous months.
+                  Advanced predictive models suggest your next month's
+                  spending patterns and provide smart suggestions to save more.
+                </p>
+              </div>
+            </div>
+
+
+
+            <div className="feature-item">
+              <div className="feature-icon">📊</div>
+              <div className="feature-content">
+                <h4>Interactive Dashboards</h4>
+                <p>
+                  Visualize your finances through beautiful glassy charts,
+                  income vs expense trends, and detailed category breakdowns.
                 </p>
               </div>
             </div>
 
             <div className="feature-item">
-              <div className="feature-icon">🧠</div>
+              <div className="feature-icon">📥</div>
               <div className="feature-content">
-                <h4>Smart Spending Insights</h4>
+                <h4>Advanced Export & Search</h4>
                 <p>
-                  Rule-based insights highlight top spending categories,
-                  frequent small expenses, and weekday vs weekend patterns.
-                </p>
-              </div>
-            </div>
-
-            <div className="feature-item">
-              <div className="feature-icon">⚠️</div>
-              <div className="feature-content">
-                <h4>AI Anomaly Detection</h4>
-                <p>
-                  Machine learning detects unusually high or low transactions
-                  based on your personal spending behavior.
-                </p>
-              </div>
-            </div>
-
-            <div className="feature-item">
-              <div className="feature-icon">🔐</div>
-              <div className="feature-content">
-                <h4>Secure & Private by Design</h4>
-                <p>
-                  JWT authentication, Argon2 password hashing, and fully
-                  user-isolated financial data.
+                  Powerful transaction management with deep search, filtering,
+                  and easy CSV export for all your financial reporting needs.
                 </p>
               </div>
             </div>

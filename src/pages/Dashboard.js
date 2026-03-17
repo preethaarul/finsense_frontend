@@ -11,8 +11,12 @@ import {
   PointElement,
   LineElement,
   Title,
+  DoughnutController,
+  LineController,
+  Filler,
 } from "chart.js";
 import { authFetch } from "../utils/authFetch";
+import { FiArrowUpRight, FiArrowDownRight, FiActivity, FiBriefcase, FiPieChart } from "react-icons/fi";
 
 ChartJS.register(
   ArcElement,
@@ -22,7 +26,10 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
-  Title
+  Title,
+  DoughnutController,
+  LineController,
+  Filler
 );
 
 const API_BASE = process.env.REACT_APP_API_BASE_URL;
@@ -31,11 +38,11 @@ function Dashboard() {
   const [summary, setSummary] = useState(undefined);
   const [timeline, setTimeline] = useState(undefined);
   const [ruleInsights, setRuleInsights] = useState(null);
-  const [mlInsights, setMlInsights] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [view, setView] = useState("monthly");
   const [loading, setLoading] = useState(true);
-  const [showAnomalyDetails, setShowAnomalyDetails] = useState(false);
+
+  const [isViewDropdownOpen, setIsViewDropdownOpen] = useState(false);
 
   /* ---------- LOAD DATA ---------- */
   useEffect(() => {
@@ -43,18 +50,16 @@ function Dashboard() {
       try {
         setLoading(true);
 
-        const [s, t, r, ml, tx] = await Promise.all([
+        const [s, t, r, tx] = await Promise.all([
           authFetch(`${API_BASE}/dashboard/summary`),
           authFetch(`${API_BASE}/dashboard/timeline?view=${view}`),
           authFetch(`${API_BASE}/dashboard/rule-insights`),
-          authFetch(`${API_BASE}/dashboard/ml-insights`),
           authFetch(`${API_BASE}/transactions`),
         ]);
 
         setSummary(await s.json());
         setTimeline(await t.json());
         setRuleInsights(await r.json());
-        setMlInsights(await ml.json());
 
         const allTransactions = await tx.json();
         setTransactions(allTransactions.slice(0, 5));
@@ -62,7 +67,6 @@ function Dashboard() {
         console.error("Error loading dashboard:", error);
         setSummary(null);
         setTimeline(null);
-        setMlInsights(null);
       } finally {
         setLoading(false);
       }
@@ -176,13 +180,17 @@ function Dashboard() {
       {
         data: Object.values(summary.category_totals || {}),
         backgroundColor: [
-          "#4F46E5",
-          "#22C55E",
-          "#FACC15",
-          "#FB923C",
-          "#A855F7",
-          "#EF4444",
+          "#a855f7", // Purple
+          "#10b981", // Emerald
+          "#3b82f6", // Blue
+          "#f59e0b", // Amber
+          "#ef4444", // Red
+          "#ec4899", // Pink
+          "#06b6d4", // Cyan
+          "#8b5cf6", // Violet
+          "#fb923c", // Orange
         ],
+        hoverOffset: 15,
         borderWidth: 0,
       },
     ],
@@ -193,15 +201,27 @@ function Dashboard() {
     maintainAspectRatio: true,
     plugins: {
       legend: {
-        position: "bottom",
-        labels: {
-          padding: 20,
-          usePointStyle: true,
-          pointStyle: "circle",
-        },
+        display: false,
       },
+      tooltip: {
+        backgroundColor: '#110c1d',
+        titleColor: '#ffffff',
+        bodyColor: '#e2e8f0',
+        borderColor: 'rgba(168, 85, 247, 0.2)',
+        borderWidth: 1,
+        padding: 12,
+        displayColors: true,
+        callbacks: {
+          label: (context) => {
+            const value = context.parsed;
+            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+            const percentage = ((value / total) * 100).toFixed(1);
+            return ` ₹${value.toLocaleString()} (${percentage}%)`;
+          }
+        }
+      }
     },
-    cutout: "60%",
+    cutout: "75%", // Slimmer donut for premium look
   };
 
   /* ---------- LINE CHART ---------- */
@@ -218,18 +238,30 @@ function Dashboard() {
       {
         label: "Income",
         data: labels.map((l) => timeline.income?.[l] || 0),
-        borderColor: "#16a34a",
-        backgroundColor: "rgba(22, 163, 74, 0.1)",
-        tension: 0.4,
-        fill: false,
+        borderColor: "#10b981",
+        backgroundColor: "rgba(16, 185, 129, 0.05)",
+        tension: 0.35, // Slightly lower tension for a more accurate/professional curve
+        fill: true,
+        pointStyle: "rect", // Square points to match legend
+        pointRadius: 4,
+        pointBackgroundColor: "#10b981",
+        pointBorderColor: "#ffffff",
+        pointBorderWidth: 1.5,
+        pointHoverRadius: 7,
       },
       {
         label: "Expense",
         data: labels.map((l) => timeline.expense?.[l] || 0),
-        borderColor: "#dc2626",
-        backgroundColor: "rgba(220, 38, 38, 0.1)",
-        tension: 0.4,
-        fill: false,
+        borderColor: "#f43f5e",
+        backgroundColor: "rgba(244, 63, 94, 0.05)",
+        tension: 0.35,
+        fill: true,
+        pointStyle: "rect", // Square points to match legend
+        pointRadius: 4,
+        pointBackgroundColor: "#f43f5e",
+        pointBorderColor: "#ffffff",
+        pointBorderWidth: 1.5,
+        pointHoverRadius: 7,
       },
     ],
   };
@@ -240,19 +272,51 @@ function Dashboard() {
     plugins: {
       legend: {
         position: "top",
+        align: "end",
         labels: {
-          padding: 10,
+          padding: 20,
           usePointStyle: true,
+          pointStyle: "rect",
+          boxWidth: 10,
+          color: "#94a3b8",
+          font: { size: 12, weight: '600', family: "'Inter', sans-serif" }
         },
       },
+      tooltip: {
+        backgroundColor: '#110c1d',
+        padding: 12,
+        borderColor: 'rgba(255, 255, 255, 0.1)',
+        borderWidth: 1,
+      }
+    },
+    layout: {
+      padding: {
+        top: 10,
+        bottom: 0,
+        left: 0,
+        right: 15
+      }
     },
     scales: {
       y: {
         beginAtZero: true,
-        grid: { color: "rgba(0, 0, 0, 0.05)" },
+        grid: { color: "rgba(255, 255, 255, 0.03)", drawBorder: false },
+        border: { display: false },
+        ticks: { 
+          color: "#94a3b8", 
+          font: { size: 11, family: "'Inter', sans-serif", weight: '500' },
+          padding: 10,
+          callback: (value) => value === 0 ? '0' : '₹' + (value >= 1000 ? (value/1000) + 'k' : value)
+        }
       },
       x: {
-        grid: { color: "rgba(0, 0, 0, 0.05)" },
+        grid: { display: false },
+        border: { display: false },
+        ticks: { 
+          color: "#94a3b8", 
+          font: { size: 11, family: "'Inter', sans-serif", weight: '500' },
+          padding: 12
+        }
       },
     },
   };
@@ -262,54 +326,58 @@ function Dashboard() {
     !ruleInsights.message &&
     Object.keys(ruleInsights).length > 0;
 
-  const hasMlInsights =
-    mlInsights &&
-    mlInsights.anomalies &&
-    mlInsights.anomalies.length > 0;
-
-  const hasAnyInsights = hasRuleInsights || hasMlInsights;
+  const hasAnyInsights = hasRuleInsights;
 
   return (
-    <div className="dashboard-container">
-      <h1>Dashboard</h1>
+    <div className="page-container dashboard-container">
+      <header className="page-header-area">
+        <h1 className="page-title">Dashboard</h1>
+        <p className="page-subtitle">Welcome back! Here's what's happening with your money.</p>
+      </header>
 
       {/* ---------- STATS ---------- */}
       <div className="stats-row">
         <div className="stat-card">
-          <h4>Spent This Month</h4>
-          <p className="expense">
+          <div className="stat-header">
+            <h4>Spent This Month</h4>
+            <div className="stat-icon-box expense-bg">
+              <FiArrowDownRight className="red-icon" />
+            </div>
+          </div>
+          <p className="large-amount">
             ₹{expenseThisMonth.toLocaleString()}
           </p>
           <span className="stat-sub">
-            As of {currentDayOfMonth}{" "}
-            {currentDayOfMonth === 1 ? "day" : "days"}
+            ↗ Actual spending so far
           </span>
         </div>
 
         <div className="stat-card">
-          <h4>Monthly Projection</h4>
-          <p className={projectionClass}>
+          <div className="stat-header">
+            <h4>Monthly Projection</h4>
+            <div className="stat-icon-box projection-bg">
+              <FiActivity className="purple-icon" />
+            </div>
+          </div>
+          <p className="large-amount">
             ₹{monthlyProjection.toLocaleString()}
           </p>
           <span className="stat-sub">
-            {projectionText}
-            {projectionSubtext && (
-              <>
-                <br />
-                <small style={{ opacity: 0.8 }}>
-                  {projectionSubtext}
-                </small>
-              </>
-            )}
+            ↗ Estimated end-of-month
           </span>
         </div>
 
         <div className="stat-card">
-          <h4>Remaining Balance</h4>
-          <p className={balanceClass}>
+          <div className="stat-header">
+            <h4>Remaining Budget</h4>
+            <div className="stat-icon-box budget-bg">
+              <FiPieChart className="green-icon" />
+            </div>
+          </div>
+          <p className="large-amount">
             ₹{remainingBalance.toLocaleString()}
           </p>
-          <span className="stat-sub">{balanceText}</span>
+          <span className="stat-sub">↗ Based on your set budget</span>
         </div>
       </div>
 
@@ -318,21 +386,78 @@ function Dashboard() {
         <div className="chart-card">
           <h4>Expense by Category</h4>
           <div className="chart-container">
-            <Doughnut data={donutData} options={donutOptions} />
+            <div className="donut-and-breakdown">
+              <div className="donut-wrapper">
+                {Object.keys(summary.category_totals || {}).length > 0 ? (
+                  <Doughnut data={donutData} options={donutOptions} />
+                ) : (
+                  <div className="empty-chart-placeholder">
+                    <FiPieChart />
+                    <p>No data</p>
+                  </div>
+                )}
+              </div>
+              
+              <div className="category-list">
+                {Object.entries(summary.category_totals || {}).map(([cat, val], idx) => {
+                  const total = Object.values(summary.category_totals).reduce((a, b) => a + b, 0);
+                  const percentage = ((val / total) * 100).toFixed(0);
+                  const colors = [
+                    "#a855f7", "#10b981", "#3b82f6", "#f59e0b", "#ef4444", "#ec4899", "#06b6d4", "#8b5cf6", "#fb923c"
+                  ];
+                  
+                  return (
+                    <div key={cat} className="category-item">
+                      <div className="cat-info">
+                        <span 
+                          className="cat-dot" 
+                          style={{ backgroundColor: colors[idx % colors.length] }}
+                        ></span>
+                        <span className="cat-name">{cat}</span>
+                      </div>
+                      <div className="cat-values">
+                        <span className="cat-amount">₹{val.toLocaleString()}</span>
+                        <span className="cat-percent">{percentage}%</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="chart-card">
           <div className="chart-header">
             <h4>Income vs Expense</h4>
-            <select
-              value={view}
-              onChange={(e) => setView(e.target.value)}
-            >
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="yearly">Yearly</option>
-            </select>
+            <div className="custom-period-picker">
+              <button 
+                className={`period-toggle-btn ${isViewDropdownOpen ? 'active' : ''}`}
+                onClick={() => setIsViewDropdownOpen(!isViewDropdownOpen)}
+              >
+                {view.charAt(0).toUpperCase() + view.slice(1)}
+              </button>
+              
+              {isViewDropdownOpen && (
+                <>
+                  <div className="picker-overlay" onClick={() => setIsViewDropdownOpen(false)} />
+                  <div className="picker-list-glass">
+                    {['weekly', 'monthly', 'yearly'].map(period => (
+                      <div 
+                        key={period} 
+                        className={`picker-option ${view === period ? 'selected' : ''}`}
+                        onClick={() => {
+                          setView(period);
+                          setIsViewDropdownOpen(false);
+                        }}
+                      >
+                        {period.charAt(0).toUpperCase() + period.slice(1)}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
           <div className="chart-container">
             <Line data={lineData} options={lineOptions} />
@@ -367,54 +492,12 @@ function Dashboard() {
                 </>
               )}
 
-              {hasMlInsights && (
-                <li className="anomaly-section">
-                  <div
-                    className="anomaly-toggle"
-                    onClick={() =>
-                      setShowAnomalyDetails(!showAnomalyDetails)
-                    }
-                  >
-                    ⚠️ AI detected {mlInsights.anomalies.length} unusual
-                    transaction
-                    {mlInsights.anomalies.length > 1 ? "s" : ""}
-                    <span style={{ marginLeft: "8px" }}>
-                      {showAnomalyDetails ? "▲" : "▼"}
-                    </span>
-                  </div>
 
-                  {showAnomalyDetails && (
-                    <ul className="anomaly-details">
-                      {mlInsights.anomalies.map((a, i) => (
-                        <li key={i}>
-                          ₹{a.amount.toLocaleString()} • {a.category} (
-                          {a.date})
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              )}
             </ul>
           )}
         </div>
 
-        <div className="insight-card">
-          <h4>Latest Transactions</h4>
 
-          {transactions.length === 0 ? (
-            <p className="muted">No transactions yet.</p>
-          ) : (
-            <ul>
-              {transactions.map((t) => (
-                <li key={t.id}>
-                  ₹{t.amount.toLocaleString()} • <b>{t.category}</b> (
-                  {t.date})
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
       </div>
     </div>
   );

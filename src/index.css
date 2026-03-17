@@ -1,9 +1,38 @@
-/* ---------- LIGHT THEME ---------- */
-
 :root {
   --topbar-height: 64px;
   --sidebar-width: 240px;
   --mobile-sidebar-width: 280px;
+
+  /* Global Purple Black Theme Only */
+  --bg-primary: #0a041a;
+  --bg-gradient: linear-gradient(135deg, #130a2a 0%, #05010d 50%, #200d3d 100%);
+  --bg-secondary: rgba(15, 2, 35, 0.7);
+  --bg-card: rgba(40, 25, 70, 0.35);
+  
+  --glass-blur: blur(16px);
+  --glass-border: 1px solid rgba(168, 85, 247, 0.12);
+  --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-landing: #d8b4fe;
+  
+  --border-color: rgba(168, 85, 247, 0.2);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  
+  --sidebar-bg: #0a0118;
+  --topbar-bg: #000000;
+  
+  --accent-primary: #a855f7;
+  --accent-secondary: #d8b4fe;
+  --accent-gradient: linear-gradient(135deg, #7e22ce 0%, #a855f7 100%);
+  --header-purple: #ffffff; /* Headings are white in screenshot */
+  
+  --nav-hover: rgba(168, 85, 247, 0.1);
+  --nav-active-bg: #3b1c6e; /* Purple block in screenshot */
+  
+  --card-shadow: var(--glass-shadow);
 }
 
 /* Responsive adjustments */
@@ -14,10 +43,16 @@
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  margin: 0; /* Remove default margin */
-  padding: 0; /* Remove default padding */
+  background: 
+    radial-gradient(circle at 10% 10%, rgba(168, 85, 247, 0.25) 0%, transparent 45%),
+    radial-gradient(circle at 90% 90%, rgba(126, 34, 206, 0.2) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 65%),
+    var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
   transition: background 0.3s ease, color 0.3s ease;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
@@ -25,7 +60,7 @@ body {
 /* Remove any default browser white space */
 html, body {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
@@ -35,31 +70,86 @@ html, body {
   min-height: 100vh;
 }
 
-
-
 /* Global Page Header Styles */
-.page-header {
-  font-size: 28px;
-  font-weight: 700;
-  color: #1f2937;
-  letter-spacing: -0.5px;
-  margin: 0 0 24px 0;
-  padding: 0;
-  width: 100%;
+.page-header-area {
+  margin-bottom: 2rem;
   text-align: left;
-  position: relative;
 }
 
-/* Add a subtle gradient underline */
-.page-header::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -8px;
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(90deg, #4f46e5, #7c3aed);
-  border-radius: 2px;
+.page-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem 0 !important;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ffffff 40%, #d8b4fe 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+  display: block;
+}
+
+.page-subtitle {
+  color: #94a3b8 !important;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.page-container {
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .page-container {
+    padding: 20px 16px;
+  }
+  
+  .page-title {
+    font-size: 1.75rem;
+  }
+}
+
+/* Global Responsive Utilities */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+  .header-flex-row {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Form Responsiveness */
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 
 /* For pages where content is centered, we'll adjust */
@@ -67,7 +157,13 @@ html, body {
   text-align: center;
 }
 
-.page-centered::after {
-  left: 50%;
-  transform: translateX(-50%);
+select option {
+  background-color: #0a041a;
+  color: #ffffff;
+}
+
+/* Reset any specific H1 styles to follow global */
+h1 {
+  margin: 0;
+  padding: 0;
 }
