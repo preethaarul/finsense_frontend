@@ -606,9 +606,11 @@
   .brand-logo{
     margin-bottom: 20px;
   }
-   .brand-tag{
+  .brand-tag {
     margin-top: 15px;
-   }
+    margin-left: 0;
+    text-align: center;
+  }
   
  
 }
@@ -660,6 +662,12 @@
     flex-direction: row;
     justify-content: flex-start;
     margin-bottom: 20px;
+  }
+
+  .brand-tag {
+    text-align: left;
+    margin-left: 62px;
+    margin-top: -10px;
   }
   
   .brand-headline {
