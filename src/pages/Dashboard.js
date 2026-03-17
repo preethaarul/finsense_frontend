@@ -49,11 +49,10 @@ function Dashboard() {
       try {
         setLoading(true);
 
-        const [s, t, r, tx] = await Promise.all([
+        const [s, t, r] = await Promise.all([
           authFetch(`${API_BASE}/dashboard/summary`),
           authFetch(`${API_BASE}/dashboard/timeline?view=${view}`),
           authFetch(`${API_BASE}/dashboard/rule-insights`),
-          authFetch(`${API_BASE}/transactions`),
         ]);
 
         setSummary(await s.json());
@@ -97,8 +96,7 @@ function Dashboard() {
   }
 
   /* ---------- DATA EXTRACTION ---------- */
-  const monthlyBudget = summary.monthly_budget || 0;
-  const expenseThisMonth = summary.expense_this_month || 0;
+   const expenseThisMonth = summary.expense_this_month || 0;
   const remainingBalance = summary.remaining_balance || 0;
 
   /* ---------- MONTHLY PROJECTION ---------- */
